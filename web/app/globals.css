@@ -2,12 +2,12 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #202124;
+  --foreground: #111827;
 }
 
 body {
-  background: #f8f9fa;
-  color: #202124;
+  background: #f7f8fb;
+  color: #111827;
 }
 
 @media print {

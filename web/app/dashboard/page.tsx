@@ -46,12 +46,12 @@ const initialAgentState: AgentState = {
 };
 
 const stepColor: Record<string, string> = {
-  routing: "text-[#4285F4]",
-  routing_done: "text-[#1a73e8]",
-  evaluating: "text-[#a142f4]",
+  routing: "text-[#4f46e5]",
+  routing_done: "text-[#4338ca]",
+  evaluating: "text-[#7c3aed]",
   record_complete: "",
-  info: "text-[#5f6368]",
-  api_error: "text-[#f9ab00]",
+  info: "text-[#6b7280]",
+  api_error: "text-[#b45309]",
 };
 
 const contentTypeIcon: Record<string, React.ReactNode> = {
@@ -256,7 +256,7 @@ export default function DashboardPage() {
         finalizeRun(finalResults, calculateMetrics(finalResults), Date.now() - startedAt, finalResults.length < 60);
       } else {
         setAgentStatuses({ router: "error", textQA: "error", imageQA: "error", avQA: "error", insight: "error" });
-        addLog({ type: "api_error", message: `Could not start the pipeline: ${err instanceof Error ? err.message : "Unknown error"}. Please click Run again.` });
+        addLog({ type: "api_error", message: `Could not start the pipeline: ${err instanceof Error ? err.message : "Unknown error"}. Please tap Run again.` });
       }
     } finally {
       setLoading(false);
@@ -264,21 +264,21 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10 space-y-10">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-10 space-y-8 sm:space-y-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#202124]">ProductX QA Command Center</h1>
-          <p className="text-[#5f6368] mt-1">Multi-agent quality assurance pipeline for content moderation teams.</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827]">ProductX QA Command Center</h1>
+          <p className="text-[#6b7280] mt-1 text-sm sm:text-base">Multi-agent quality assurance pipeline for content moderation teams.</p>
         </div>
-        <span className="inline-flex items-center gap-2 rounded-full border border-[#dadce0] bg-white px-4 py-2 text-sm font-medium text-[#4285F4] shadow-sm">
-          <span className="h-2 w-2 rounded-full bg-[#34A853] animate-pulse" />
+        <span className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-4 py-2 text-sm font-medium text-[#4f46e5] shadow-sm self-start sm:self-auto">
+          <span className="h-2 w-2 rounded-full bg-[#059669] animate-pulse" />
           Powered by Gemini 2.5 Flash
         </span>
       </div>
 
       {/* Agent Status Row */}
-      <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-4 sm:justify-start">
         <AgentStatusCard name="Router Agent" icon={RouteIcon} status={agentStatuses.router} />
         <AgentStatusCard name="Text QA" icon={FileText} status={agentStatuses.textQA} />
         <AgentStatusCard name="Image QA" icon={ImageIcon} status={agentStatuses.imageQA} />
@@ -288,11 +288,11 @@ export default function DashboardPage() {
 
       {/* Run Button + Progress */}
       <div className="flex flex-col items-center gap-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
             onClick={runQA}
             disabled={loading}
-            className="flex items-center gap-3 rounded-xl bg-[#4285F4] hover:bg-[#1a73e8] disabled:opacity-60 disabled:cursor-not-allowed px-8 py-4 text-lg font-bold text-white shadow-md transition-all"
+            className="flex flex-1 sm:flex-none items-center justify-center gap-3 rounded-xl bg-[#4f46e5] hover:bg-[#4338ca] disabled:opacity-60 disabled:cursor-not-allowed px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg font-bold text-white shadow-md transition-all"
           >
             {loading
               ? <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
@@ -303,7 +303,7 @@ export default function DashboardPage() {
             <button
               onClick={clearRun}
               title="Clear results"
-              className="flex items-center gap-2 rounded-xl border border-[#dadce0] bg-white px-4 py-4 text-[#5f6368] hover:text-[#202124] hover:border-[#9aa0a6] transition-all"
+              className="flex items-center gap-2 rounded-xl border border-[#e5e7eb] bg-white px-4 py-3.5 sm:py-4 text-[#6b7280] hover:text-[#111827] hover:border-[#cbd5e1] transition-all"
             >
               <RotateCcw className="h-5 w-5" />
             </button>
@@ -312,13 +312,13 @@ export default function DashboardPage() {
 
         {loading && (
           <div className="w-full max-w-md space-y-1">
-            <div className="flex justify-between text-xs text-[#5f6368]">
+            <div className="flex justify-between text-xs text-[#6b7280]">
               <span>Progress</span>
               <span>{progress}%</span>
             </div>
-            <div className="h-2 w-full rounded-full bg-[#e8eaed] overflow-hidden">
+            <div className="h-2 w-full rounded-full bg-[#eef0f3] overflow-hidden">
               <motion.div
-                className="h-full rounded-full bg-[#4285F4]"
+                className="h-full rounded-full bg-[#4f46e5]"
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.3 }}
               />
@@ -327,7 +327,7 @@ export default function DashboardPage() {
         )}
 
         {completedAt && !loading && (
-          <p className="text-xs text-[#80868b]">
+          <p className="text-xs text-[#9ca3af] text-center">
             Last run: {new Date(completedAt).toLocaleString()}
             {duration && ` · completed in ${(duration / 1000).toFixed(1)}s`}
           </p>
@@ -336,9 +336,9 @@ export default function DashboardPage() {
 
       {/* Partial-results notice */}
       {partial && !loading && (
-        <div className="rounded-xl border border-[#fde293] bg-[#fef7e0] px-5 py-3 text-sm text-[#b06000] flex items-center gap-2">
-          <span className="font-semibold">Partial run:</span>
-          fewer than 60 records were processed before the stream ended. Metrics below are computed from what completed. Click Run again for a full pass.
+        <div className="rounded-xl border border-[#fde68a] bg-[#fffbeb] px-5 py-3 text-sm text-[#b45309] flex items-start gap-2">
+          <span className="font-semibold whitespace-nowrap">Partial run:</span>
+          <span>fewer than 60 records were processed before the stream ended. Metrics below are computed from what completed — tap Run again for a full pass.</span>
         </div>
       )}
 
@@ -348,34 +348,34 @@ export default function DashboardPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl border border-[#dadce0] bg-white overflow-hidden shadow-sm"
+            className="rounded-xl border border-[#e5e7eb] bg-white overflow-hidden shadow-sm"
           >
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-[#dadce0] bg-[#f1f3f4]">
-              <Terminal className="h-4 w-4 text-[#4285F4]" />
-              <span className="text-sm font-semibold text-[#202124]">Agent Activity Log</span>
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-[#e5e7eb] bg-[#f9fafb]">
+              <Terminal className="h-4 w-4 text-[#4f46e5]" />
+              <span className="text-sm font-semibold text-[#111827]">Agent Activity Log</span>
               {loading && (
-                <span className="ml-auto flex items-center gap-1.5 text-xs text-[#34A853]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#34A853] animate-pulse" /> Live
+                <span className="ml-auto flex items-center gap-1.5 text-xs text-[#059669]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#059669] animate-pulse" /> Live
                 </span>
               )}
             </div>
-            <div ref={logRef} className="h-72 overflow-y-auto p-4 space-y-1 font-mono text-xs bg-white">
+            <div ref={logRef} className="h-64 sm:h-72 overflow-y-auto p-4 space-y-1 font-mono text-[11px] sm:text-xs bg-white">
               {logs.map(line => (
                 <div key={line.id} className="flex items-start gap-2 leading-relaxed">
                   {line.type === "record_complete"
                     ? line.is_correct
-                      ? <CheckCircle className="h-3 w-3 mt-0.5 text-[#34A853] flex-shrink-0" />
-                      : <XCircle className="h-3 w-3 mt-0.5 text-[#EA4335] flex-shrink-0" />
+                      ? <CheckCircle className="h-3 w-3 mt-0.5 text-[#059669] flex-shrink-0" />
+                      : <XCircle className="h-3 w-3 mt-0.5 text-[#e11d48] flex-shrink-0" />
                     : line.type === "routing"
-                      ? <RouteIcon className="h-3 w-3 mt-0.5 text-[#4285F4] flex-shrink-0" />
+                      ? <RouteIcon className="h-3 w-3 mt-0.5 text-[#4f46e5] flex-shrink-0" />
                       : line.type === "evaluating"
-                        ? <span className="flex-shrink-0 mt-0.5 text-[#a142f4]">{contentTypeIcon[line.content_type ?? "text"]}</span>
+                        ? <span className="flex-shrink-0 mt-0.5 text-[#7c3aed]">{contentTypeIcon[line.content_type ?? "text"]}</span>
                         : <span className="h-3 w-3 flex-shrink-0" />
                   }
                   <span className={
                     line.type === "record_complete"
-                      ? line.is_correct ? "text-[#188038]" : "text-[#c5221f]"
-                      : stepColor[line.type] || "text-[#5f6368]"
+                      ? line.is_correct ? "text-[#047857]" : "text-[#be123c]"
+                      : stepColor[line.type] || "text-[#6b7280]"
                   }>
                     {line.message}
                   </span>
@@ -394,17 +394,17 @@ export default function DashboardPage() {
           className="space-y-8"
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="rounded-xl border border-[#dadce0] bg-white p-5 text-center shadow-sm">
-              <p className="text-xs text-[#5f6368] uppercase tracking-wider mb-1">Overall Accuracy</p>
-              <p className="text-4xl font-extrabold text-[#4285F4]">{(metrics.overall_accuracy * 100).toFixed(1)}%</p>
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 text-center shadow-sm">
+              <p className="text-xs text-[#6b7280] uppercase tracking-wider mb-1">Overall Accuracy</p>
+              <p className="text-4xl font-extrabold text-[#4f46e5]">{(metrics.overall_accuracy * 100).toFixed(1)}%</p>
             </div>
-            <div className="rounded-xl border border-[#dadce0] bg-white p-5 text-center shadow-sm">
-              <p className="text-xs text-[#5f6368] uppercase tracking-wider mb-1">Total Reviews</p>
-              <p className="text-4xl font-extrabold text-[#202124]">{metrics.total_reviews}</p>
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 text-center shadow-sm">
+              <p className="text-xs text-[#6b7280] uppercase tracking-wider mb-1">Total Reviews</p>
+              <p className="text-4xl font-extrabold text-[#111827]">{metrics.total_reviews}</p>
             </div>
-            <div className="rounded-xl border border-[#dadce0] bg-white p-5 text-center shadow-sm">
-              <p className="text-xs text-[#5f6368] uppercase tracking-wider mb-1">Flagged Reviewers</p>
-              <p className="text-4xl font-extrabold text-[#EA4335]">
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 text-center shadow-sm">
+              <p className="text-xs text-[#6b7280] uppercase tracking-wider mb-1">Flagged Reviewers</p>
+              <p className="text-4xl font-extrabold text-[#e11d48]">
                 {metrics.by_reviewer.filter(r => r.needs_flag).length}
               </p>
             </div>
@@ -413,7 +413,7 @@ export default function DashboardPage() {
           <MetricsTable data={metrics.by_modality} />
 
           <div>
-            <h2 className="text-lg font-semibold text-[#202124] mb-4">Reviewer Scorecards</h2>
+            <h2 className="text-lg font-semibold text-[#111827] mb-4">Reviewer Scorecards</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {metrics.by_reviewer.map(r => (
                 <ReviewerScorecard key={r.reviewer_id} data={r} />
@@ -424,7 +424,7 @@ export default function DashboardPage() {
           <div className="flex justify-center pt-4">
             <button
               onClick={() => router.push("/insights")}
-              className="flex items-center gap-2 rounded-xl border border-[#4285F4] bg-[#e8f0fe] hover:bg-[#d2e3fc] px-6 py-3 text-[#1a73e8] font-semibold transition-all"
+              className="flex items-center gap-2 rounded-xl border border-[#c7d2fe] bg-[#eef2ff] hover:bg-[#e0e7ff] px-6 py-3 text-[#4338ca] font-semibold transition-all"
             >
               Generate Leadership Brief <ArrowRight className="h-4 w-4" />
             </button>

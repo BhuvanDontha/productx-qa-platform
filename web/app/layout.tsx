@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -10,6 +10,12 @@ export const metadata: Metadata = {
   description: "Multi-Agent QA Platform powered by Gemini 2.5",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -17,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-[#f8f9fa] min-h-screen text-[#202124] antialiased`}>
+      <body className={`${inter.className} bg-[#f7f8fb] min-h-screen text-[#111827] antialiased`}>
         <Navbar />
         <main>{children}</main>
       </body>
