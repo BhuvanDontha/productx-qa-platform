@@ -96,12 +96,23 @@ export async function POST() {
 
   const stream = new ReadableStream({
     async start(controller) {
-      const send = (data: unknown) => controller.enqueue(new TextEncoder().encode(sse(data)));
+      let closed = false;
+      // Never let a client disconnect (enqueue throwing) crash the function.
+      const send = (data: unknown) => {
+        if (closed) return;
+        try {
+          controller.enqueue(new TextEncoder().encode(sse(data)));
+        } catch {
+          closed = true; // client went away — stop emitting
+        }
+      };
 
-      send({ type: "start", total: REVIEWS.length });
+      try {
+        send({ type: "start", total: REVIEWS.length });
 
-      for (let i = 0; i < REVIEWS.length; i++) {
-        const record = REVIEWS[i];
+        for (let i = 0; i < REVIEWS.length; i++) {
+          if (closed) break; // client disconnected — abandon the run
+          const record = REVIEWS[i];
 
         send({
           type: "step", step: "routing", index: i,
@@ -149,6 +160,12 @@ export async function POST() {
           type: "step", step: "record_complete", index: i,
           total_records: REVIEWS.length,
           review_id: record.review_id, reviewer_id: record.reviewer_id,
+          // include fields needed to reconstruct QAResult client-side
+          content_type: record.content_type,
+          reviewer_decision: record.reviewer_decision,
+          ground_truth: record.ground_truth,
+          routing_priority: routing.priority,
+          routing_reason: routing.routing_reason,
           is_correct: qaResult.is_correct,
           error_type: evaluation.error_type,
           severity: evaluation.severity,
@@ -161,10 +178,17 @@ export async function POST() {
         });
       }
 
-      const metrics = calculateMetrics(qaResults);
-      const duration_ms = Date.now() - startTime;
-      send({ type: "complete", qa_results: qaResults, metrics, duration_ms });
-      controller.close();
+        const metrics = calculateMetrics(qaResults);
+        const duration_ms = Date.now() - startTime;
+        // qa_results intentionally omitted — client reconstructs from record_complete events
+        send({ type: "complete", metrics, duration_ms });
+      } catch (err: unknown) {
+        // Unexpected failure — surface what we can; client recovers from accumulated records.
+        const message = err instanceof Error ? err.message : String(err);
+        send({ type: "error", message, processed: qaResults.length });
+      } finally {
+        try { controller.close(); } catch { /* already closed */ }
+      }
     },
   });
 
