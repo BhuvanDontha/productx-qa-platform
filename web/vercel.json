@@ -1,0 +1,13 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "functions": {
+    "app/api/run-qa/route.ts": {
+      "maxDuration": 300
+    },
+    "app/api/generate-insights/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}

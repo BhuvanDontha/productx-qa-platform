@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0F172A;
+  --foreground: #F1F5F9;
+}
+
+body {
+  background: #0F172A;
+  color: #F1F5F9;
+}
+
+@media print {
+  nav { display: none; }
+  body { background: white; color: black; }
+}
